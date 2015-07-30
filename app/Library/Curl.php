@@ -99,6 +99,10 @@ class Curl
         $this->_cookies[$key] = $value;
         $this->setopt(CURLOPT_COOKIE, http_build_query($this->_cookies, '', '; '));
     }
+    public function setIp($ip)
+    {
+        $this->setopt(CURLOPT_HTTPHEADER, ["X-FORWARDED-FOR:".$ip ,"CLIENT-IP:".$ip]);
+    }
     public function setOpt($option, $value)
     {
         return curl_setopt($this->curl, $option, $value);
@@ -113,6 +117,7 @@ class Curl
             curl_close($this->curl);
         }
     }
+
     public function reset()
     {
         $this->close();
