@@ -65,13 +65,12 @@
      
                         var html = "";
                         $.each(res.data, function(i, val) {
-                            html += "<tr><td>"+ i +"</td><td><a href="+ res.data[i]['result']['link'] +" target='_blank'>" + res.data[i]['result']['title'] + "</a></td>";
+                            html += "<tr><td>"+ (parseInt(i)+1) +"</td><td><a href="+ res.data[i]['result']['link'] +" target='_blank'>" + res.data[i]['result']['title'] + "</a></td>";
                             html += "<td>" + res.data[i]['result']['keyword'] + "</td>";
                             html += "<td>" + res.data[i]['result']['price'] + "</td></tr>";
                         });
 
                         $("tbody").append(html);
-                        
                     }
                 },
                 error : function() {
@@ -93,30 +92,20 @@
                     <th> 序号 <i class="sort icon grey"></i></th>
                     <th> Title （标题） <i class="sort icon grey"></i></th>
                     <th> Keywords （关键词）<i class="sort icon grey"></i></th>
-                    <th> Price （价格） <i class=" icon"></i></th>
+                    <th> Price <i class=" icon"></i></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td colspan="4" class="center" style="text-align:center">
-                        搜索下看就有了哦
+                        <p>亲！还没有数据哦！</p>
                     </td>
                 </tr>
-                <!-- <tr>
-                    <td>1</td>
-                    <td>10 hours ago10 hours ago1</td>
-                    <td>10 hours ago</td>
-                    <td class="collapsing">
-                        <button class="ui orange button submit tiny action">修改</button>
-                        <button class="ui green button submit tiny action">查看</button>
-                        <button class="ui red button submit tiny action">删除</button>
-                    </td>
-                </tr> -->
             </tbody>
             <tfoot>
                 <tr>
                     <th colspan="4">
-                        <div class="ui floated right pagination menu">
+                        <!-- <div class="ui floated right pagination menu">
                             <a class="icon item disabled"><i class="left chevron icon"></i></a>
                             <a class="item active">1</a>
                             <a class="item">2</a>
@@ -124,8 +113,8 @@
                             <a class="item">4</a>
                             <a class="icon item"><i class="right chevron icon"></i></a>
 
-                        </div>
-                        <button class="ui orange button submit tiny action">导出Exl</button>
+                        </div> -->
+                        <button class="ui orange button submit tiny action">导出Excel</button>
                     </th>
 
                 </tr>

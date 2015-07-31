@@ -20,3 +20,6 @@ $app->get('/reptile', 'ReptileController@index');
 
 // 爬虫结果
 $app->get('/result', 'ReptileController@handle');
+
+// 爬虫数据导出
+$app->get('/result/export', 'ReptileController@exportExcel');
