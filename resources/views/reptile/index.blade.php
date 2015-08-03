@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ZenZen采集</title>
+    <title>阿里巴巴采集</title>
     <!-- <link rel="stylesheet" type="text/css" href="/css/comment.css"> -->
     <link rel="stylesheet" type="text/css" href="/bower_components/Semantic-UI/dist/semantic.min.css">
 
@@ -51,12 +51,12 @@
     $(function(){
         $(document).on('click', '#keySearch', function(){
             $.ajax({
-                url : '/result',
+                url : '/reptile/result',
                 type : 'GET',
                 data : {keys : $('input[name="keys"]').val()},
                 dataType : 'json',
                 beforeSend: function () {
-                    //异步请求时spinner出现
+                    //异步请求时loading出现
                     $(".loading").removeClass('hide');
                 },
                 success : function(res) {
@@ -89,10 +89,10 @@
         <table class="ui celled table">
             <thead>
                 <tr>
-                    <th> 序号 <i class="sort icon grey"></i></th>
-                    <th> Title （标题） <i class="sort icon grey"></i></th>
-                    <th> Keywords （关键词）<i class="sort icon grey"></i></th>
-                    <th> Price <i class=" icon"></i></th>
+                    <th>序号</th>
+                    <th>Title （标题）</th>
+                    <th>Keywords （关键词</th>
+                    <th>Price <i class=" icon"></i></th>
                 </tr>
             </thead>
             <tbody>

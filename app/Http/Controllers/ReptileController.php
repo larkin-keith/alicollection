@@ -10,7 +10,7 @@ use Cache;
 
 class ReptileController extends BaseController
 {   
-    protected $userIds;
+    protected static $userIds;
 
     /**
      * 初始化userIds
@@ -22,7 +22,7 @@ class ReptileController extends BaseController
 
     protected function setUserIds()
     {
-        $this->userIds = mt_rand(0, 999999999);
+        self::$userIds = mt_rand(0, 999999999);
     }
 
     /**
@@ -96,7 +96,7 @@ class ReptileController extends BaseController
      */
     public function index()
     {
-        dd($this->getIp());
+        return view('reptile.index');   
     }
 
     /**
@@ -110,7 +110,6 @@ class ReptileController extends BaseController
         $param = $page ? [] : ['fsb' => 'y', 'IndexArea' => 'product_en', 'CatId' => '', 'SearchText' => $keys,];
         // curl采集
         $curl = new Curl();
-        $curl->setIp($this->getIp());
         $curl->get($url, $param);
         // 获取采集内容
         $content = $curl->response;
@@ -120,6 +119,8 @@ class ReptileController extends BaseController
         
         $data = [];
         foreach ($res[1] as $key => $value) {
+            // 伪造IP
+            $curl->setIp($this->getIp());
             $curl->get($value, []);
             $content = $curl->response;
             $content = str_replace("\r\n", '', $content); // 清除换行符  
@@ -139,7 +140,7 @@ class ReptileController extends BaseController
         }
 
         $curl->close();
-        // Cache::add('aw:'.$this->userIds, $data, 10);
+        Cache::add('aw:' . self::$userIds, $data, 10);
 
         return response()->json(['data'=>$data, 'status' => 200]);
     }
@@ -152,7 +153,11 @@ class ReptileController extends BaseController
         $excel = new \PHPExcel();
         $letter = ['A','B','C','D','E','F','F','G'];
         $tableheader = ['序号', '标题', '关键词', '价格'];
-        
+        dd('aw:' . self::$userIds);
+        if (Cache::has('aw:' . self::$userIds)) {
+            dd(Cache::get('aw:' . self::$userIds));
+        }
+
         foreach ($tableheader as $key => $value) {
             $excel->getActiveSheet()->setCellValue($letter[$key]."1",$value);
         }
