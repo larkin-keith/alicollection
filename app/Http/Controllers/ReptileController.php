@@ -10,7 +10,7 @@ use Cache;
 
 class ReptileController extends BaseController
 {   
-    protected static $userIds;
+    protected $userIds;
 
     /**
      * 初始化userIds
@@ -22,7 +22,7 @@ class ReptileController extends BaseController
 
     protected function setUserIds()
     {
-        self::$userIds = mt_rand(0, 999999999);
+        $this->userIds = mt_rand(0, 999999999);
     }
 
     /**
@@ -140,9 +140,9 @@ class ReptileController extends BaseController
         }
 
         $curl->close();
-        Cache::add('aw:' . self::$userIds, $data, 10);
+        Cache::add('aw:' . $this->userIds, $data, 60);
 
-        return response()->json(['data'=>$data, 'status' => 200]);
+        return response()->json(['userIds' => $this->userIds, 'data'=>$data, 'status' => 200]);
     }
 
     /**
@@ -150,30 +150,46 @@ class ReptileController extends BaseController
      */
     public function exportExcel(Request $request)
     {
+        // 加载excel文档
+        include base_path() . '/app/Library/PHPExcel.php';
+
+        $userIds = $request->input('userIds', '');
+        $keys = $request->input('keys', '');
+
         $excel = new \PHPExcel();
-        $letter = ['A','B','C','D','E','F','F','G'];
-        $tableheader = ['序号', '标题', '关键词', '价格'];
-        dd('aw:' . self::$userIds);
-        if (Cache::has('aw:' . self::$userIds)) {
-            dd(Cache::get('aw:' . self::$userIds));
+        $letter = ['A','B','C'];
+        $tableheader = ['标题', '关键词', '价格'];
+        
+        $data = [];
+        if (Cache::has('aw:' . $userIds)) {
+            $data = Cache::get('aw:' . $userIds);
+        
+            foreach ($tableheader as $key => $value) {
+                $excel->getActiveSheet()->setCellValue($letter[$key]."1",$value);
+                $excel->getActiveSheet()->getColumnDimension($letter[$key])->setAutoSize(true);
+            }
+
+            foreach ($data as $key => $value) {
+                $key+=2;
+                $excel->getActiveSheet()->setCellValue('A'.$key, strip_tags($value['result']['title']));
+                $excel->getActiveSheet()->setCellValue('B'.$key, $value['result']['keyword']);
+                $excel->getActiveSheet()->setCellValue('C'.$key, $value['result']['price']);
+            }
+
+            $write = new \PHPExcel_Writer_Excel5($excel);
+            header("Pragma: public");
+            header("Expires: 0");
+            header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+            header("Content-Type:application/force-download");
+            header("Content-Type:application/vnd.ms-execl");
+            header("Content-Type:application/octet-stream");
+            header("Content-Type:application/download");;
+            header('Content-Disposition:attachment;filename="阿里巴巴'.$keys.'关键词'.$userIds.'.xls"');
+            header("Content-Transfer-Encoding:binary");
+            $write->save('php://output');
         }
 
-        foreach ($tableheader as $key => $value) {
-            $excel->getActiveSheet()->setCellValue($letter[$key]."1",$value);
-        }
-
-        $write = new \PHPExcel_Writer_Excel5($excel);
-
-        header("Pragma: public");
-        header("Expires: 0");
-        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
-        header("Content-Type:application/force-download");
-        header("Content-Type:application/vnd.ms-execl");
-        header("Content-Type:application/octet-stream");
-        header("Content-Type:application/download");;
-        header('Content-Disposition:attachment;filename="阿里巴巴关键词.xls"');
-        header("Content-Transfer-Encoding:binary");
-
-        $write->save('php://output');
+        return response()->json(['data'=>[], 'status' => 300, 'message' => '没有数据']);
     }
+
 }

@@ -71,6 +71,9 @@
                         });
 
                         $("tbody").append(html);
+                        // userIds
+                        $("input[name='userIds']").val(res.userIds);
+                        $("#export").removeClass('disabled');
                     }
                 },
                 error : function() {
@@ -81,8 +84,11 @@
                 },
             });
         });
-    });
         
+        $(document).on('click', '#export', function(){
+            window.location.href = "/result/export?userIds=" + $('input[name="userIds"]').val()+"&keys=" + $('input[name="keys"]').val();
+        });
+    });
     </script>
 
     <div class="ui container mt20">
@@ -114,9 +120,9 @@
                             <a class="icon item"><i class="right chevron icon"></i></a>
 
                         </div> -->
-                        <button class="ui orange button submit tiny action">导出Excel</button>
+                        <button class="ui orange button submit tiny action disabled" id="export">导出Excel</button>
+                        <input type="hidden" name="userIds" />
                     </th>
-
                 </tr>
             </tfoot>
             <div class="loading hide">
@@ -126,5 +132,18 @@
             </div>
         </table>
     </div>
+
+    <!--操作提示框-->
+    <div class="ui small action modal">
+        <div class="header">提示框</div>
+        <div class="content">
+            <p>没有任何数据~</p>
+        </div>
+        <div class="actions">
+            <div class="ui red approve button"><i class="checkmark icon"></i>确定</div>
+            <!-- <div class="ui cancel button">取消</div> -->
+        </div>
+    </div>
+    <!--//提示框-->
 </body>
 </html>
