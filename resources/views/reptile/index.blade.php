@@ -14,7 +14,7 @@
         margin-top: 10px;
     }
     .column {
-        margin-top: 100px;
+        margin-top: 30px;
         max-width: 500px;
     }
     .searchIcon{
